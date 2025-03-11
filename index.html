@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="A creative portfolio showcasing graphic design, web, app, and geometric projects by Asiedu Ramsey." />
+  <meta name="keywords" content="portfolio, graphic design, web design, app design, projects, Asiedu Ramsey" />
+  <link rel="canonical" href="https://your-portfolio-domain.com" />
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="../../Documents/portfolio/website portfolio/manifest.json" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asiedu Ramsey's Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+  <!-- Added Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2A2B2E;
+      --secondary: #F8F8F8;
+      --accent: #FF6B6B;
+      --bg-shape: #e4e4e460;
+      --transition: 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    [data-theme="dark"] {
+      --primary: #F8F8F8;
+      --secondary: #2A2B2E;
+      --accent: #4ECDC4;
+      --bg-shape: #ffffff15;
+    }
+    /* Custom Dark Theme */
+    [data-theme="custom-dark"] {
+      --primary: #EDF6F9;
+      --secondary: #1D3E3B;
+      --accent: #FFFFFF;
+      --bg-shape: #ffffff15;
+    }
+    /* Custom Light Theme */
+    [data-theme="custom-light"] {
+      --primary: #243E36;
+      --secondary: #BED5C1;
+      --accent: #2EC4B6;
+      --bg-shape: #FFFFFF60;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--secondary);
+      color: var(--primary);
+      transition: background-color var(--transition);
+      overflow-x: hidden;
+    }
+    #loading-screen {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: var(--secondary);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 2000; transition: opacity 0.5s ease;
+    }
+    #loading-count {
+      font-size: 4rem; font-weight: bold; color: var(--primary);
+    }
+    .geometric-bg {
+      position: fixed; width: 100vw; height: 100vh; z-index: -1;
+    }
+    .shape {
+      position: absolute; opacity: 0.1;
+      animation: float 20s infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    nav { display: flex; flex-direction: column; align-items: flex-end; padding: 2rem 0; }
+    nav h2 { align-self: flex-start; }
+    .theme-toggle {
+      width: 40px; height: 40px; border-radius: 50%; border: none;
+      background-color: var(--primary); color: var(--secondary);
+      cursor: pointer; transition: transform var(--transition);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .theme-toggle:hover { transform: rotate(180deg); }
+    /* Date/Time container styles */
+    #dateTimeContainer {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--primary);
+      text-align: right;
+    }
+    #dateTimeContainer div { line-height: 1.2; }
+    
+    .hero { display: grid; grid-template-columns: 1fr 1fr; align-items: center; min-height: 80vh; }
+    .hero-content { position: relative; padding-right: 4rem; }
+    .hero h1 { font-size: 4rem; line-height: 1.1; margin-bottom: 2rem;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); }
+    .work-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem; margin: 4rem 0;
+    }
+    .project-card {
+      background: var(--bg-shape); padding: 2rem; border-radius: 15px;
+      transition: transform var(--transition); cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+    .project-card:hover { transform: translateY(-10px); }
+    footer {
+      text-align: center; padding: 4rem 0; border-top: 1px solid var(--primary);
+      margin-top: 4rem;
+    }
+    /* Social Media Section with inline SVG icons */
+    .social-media {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .social-media a {
+      text-decoration: none;
+      transition: opacity var(--transition);
+      color: inherit;
+    }
+    .social-media a:hover {
+      opacity: 0.7;
+    }
+    /* Uniform size for all social media SVG icons */
+    .social-media svg {
+      width: 30px;
+      height: 30px;
+      fill: currentColor;
+    }
+    .cursor {
+      position: fixed; width: 20px; height: 20px;
+      border: 2px solid var(--accent); border-radius: 50%;
+      pointer-events: none; transition: transform 0.3s, opacity 0.3s; z-index: 999;
+    }
+    .cursor-follower {
+      position: fixed; width: 8px; height: 8px; background: var(--accent);
+      border-radius: 50%; pointer-events: none; transition: transform 0.15s; z-index: 999;
+    }
+    html { scroll-behavior: smooth; }
+    .filter-container { display: flex; flex-wrap: wrap; gap: 1rem; margin: 2rem 0; align-items: center; }
+    .filter-btn {
+      background: none; border: 1px solid var(--primary); color: var(--primary);
+      padding: 0.5rem 1.5rem; border-radius: 2rem; cursor: pointer;
+      transition: all var(--transition);
+    }
+    .filter-btn.active { background: var(--primary); color: var(--secondary); }
+    /* Advanced Search Input */
+    #projectSearch {
+      padding: 0.5rem;
+      border: 1px solid var(--primary);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--primary);
+    }
+    .contact-form {
+      display: grid; gap: 1.5rem; max-width: 600px; margin: 4rem auto;
+    }
+    .input-group { position: relative; overflow: hidden; }
+    .form-input {
+      width: 100%; padding: 1rem; background: transparent;
+      border: none; border-bottom: 1px solid var(--primary); color: var(--primary);
+      transition: all var(--transition);
+    }
+    .form-input:focus { outline: none; border-bottom-color: var(--accent); }
+    .form-label {
+      position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+      pointer-events: none; transition: all var(--transition);
+    }
+    .form-input:focus + .form-label,
+    .form-input:not(:placeholder-shown) + .form-label {
+      top: 0; font-size: 0.8rem; color: var(--accent);
+    }
+    .success-message {
+      opacity: 0; transform: translateY(20px); transition: all var(--transition);
+      text-align: center; color: var(--accent);
+    }
+    .success-message.visible { opacity: 1; transform: translateY(0); }
+    
+    /* Project Details Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--secondary);
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      max-width: 90%;
+      width: 500px;
+      position: relative;
+    }
+    .modal button.close {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--primary);
+    }
+    
+    /* Testimonials Section */
+    #testimonials {
+      background: var(--bg-shape);
+      padding: 2rem;
+      border-radius: 15px;
+      margin: 2rem 0;
+    }
+    #testimonials h3 { margin-bottom: 1rem; }
+    .testimonial {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-left: 3px solid var(--accent);
+    }
+    
+    /* Nana Icon (for AI/chat responses) */
+    .nana-icon {
+      position: fixed; bottom: 8rem; right: 2rem;
+      background: var(--bg-shape); padding: 0.8rem; border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center;
+      z-index: 1000; transition: all 0.4s ease;
+    }
+    .nana-icon .adinkra-icon { display: none; }
+    .nana-bars {
+      margin-top: 0.4rem; display: flex; gap: 2px;
+    }
+    .nana-bars .bar {
+      width: 4px; height: 10px; background: var(--accent); border-radius: 2px;
+      animation: barPulse 1s infinite;
+    }
+    .nana-bars .bar:nth-child(2) { animation-delay: 0.2s; }
+    .nana-bars .bar:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes barPulse {
+      0%, 100% { transform: scaleY(1); opacity: 0.8; }
+      50% { transform: scaleY(1.5); opacity: 1; }
+    }
+    /* Nana Chat Messages */
+    .nana-message {
+      position: fixed;
+      bottom: 14rem;
+      right: 2rem;
+      background: var(--bg-shape);
+      padding: 0.8rem 1rem;
+      border-radius: 1rem;
+      max-width: 300px;
+      backdrop-filter: blur(10px);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.4s ease;
+      z-index: 1000;
+      margin-bottom: 0.5rem;
+    }
+    .nana-message.show { transform: translateY(0); opacity: 1; }
+    /* Neural heartbeat animation for Nana icon */
+    .neural-heartbeat { animation: heartbeat 2s infinite; }
+    @keyframes heartbeat {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.05); }
+      50% { transform: scale(1); }
+      75% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    /* Hire Me Widget */
+    #game-widget {
+      position: fixed;
+      bottom: 8rem;
+      left: 2rem;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--secondary);
+      flex-shrink: 0;
+    }
+    
+    /* Media Query Example for smaller screens */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; }
+      nav { align-items: center; }
+    }
+  </style>
+  <!-- Placeholder for Google Analytics (insert your snippet here) -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR_TRACKING_ID"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'YOUR_TRACKING_ID');
+  </script> -->
+</head>
+<body>
+  <div id="loading-screen">
+    <div id="loading-count">0</div>
+  </div>
+
+  <div class="cursor"></div>
+  <div class="cursor-follower"></div>
+
+  <div class="geometric-bg">
+    <div class="shape" style="top: 20%; left: 10%; width: 100px; height: 100px; background: var(--accent); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);"></div>
+    <div class="shape" style="top: 60%; right: 15%; width: 80px; height: 80px; background: var(--primary); border-radius: 50%;"></div>
+  </div>
+
+  <!-- Hire Me Widget -->
+  <div id="game-widget">
+    <span class="material-icons">work_outline</span>
+  </div>
+
+  <!-- Nana Icon (for AI/chat responses) -->
+  <div id="nana-icon" class="nana-icon">
+    <div class="nana-bars">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+  </div>
+
+  <!-- Search Modal -->
+  <div id="search-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="searchModalTitle">
+    <div class="modal">
+      <button class="close" onclick="closeModal('search-modal')" aria-label="Close Search Modal">&times;</button>
+      <h3 id="searchModalTitle">Search Files</h3>
+      <input type="text" id="search-input" placeholder="Enter file name..." />
+      <button id="search-btn">Search</button>
+      <div id="search-result" style="margin-top: 1rem; font-size: 0.9rem;"></div>
+    </div>
+  </div>
+
+  <!-- Project Details Modal -->
+  <div id="projectModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
+    <div class="modal">
+      <button class="close" onclick="closeModal('projectModal')" aria-label="Close Project Modal">&times;</button>
+      <h3 id="projectModalTitle">Project Details</h3>
+      <div id="projectDetailsContent">
+        <!-- Dynamic project details will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <nav class="container">
+    <h2>ASIEDU RAMSEY</h2>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+      <span class="material-icons">light_mode</span>
+    </button>
+    <!-- Date and Time Container -->
+    <div id="dateTimeContainer">
+      <div id="date"></div>
+      <div id="time"></div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Graphic Design <strong style="font-weight: bolder">Portfolio</strong></h1>
+        <h3 style="text-align: left">Innovative designer and developer.</h3>
+      </div>
+    </section>
+
+    <!-- Advanced Project Filter Section -->
+    <section class="work-grid">
+      <div class="filter-container">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="web">Web</button>
+        <button class="filter-btn" data-filter="app">App</button>
+        <button class="filter-btn" data-filter="geometric">Geometric</button>
+        <!-- Advanced Search Input -->
+        <input type="text" id="projectSearch" placeholder="Search projects..." aria-label="Search projects">
+      </div>
+      <div class="project-card" data-category="web" data-title="Project 1">
+        <h4>Project 1</h4>
+        <h5>Next-gen interface design</h5>
+      </div>
+      <div class="project-card" data-category="app" data-title="Project 2">
+        <h4>Project 2</h4>
+        <h5>Mobile productivity app</h5>
+      </div>
+      <div class="project-card" data-category="geometric" data-title="Project 3">
+        <h4>Project 3</h4>
+        <h5>Geometric pattern generator</h5>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="container">
+      <h3>Testimonials</h3>
+      <div class="testimonial">
+        <p>"An exceptional designer! The interface is both creative and user-friendly."</p>
+        <p>- Client A</p>
+      </div>
+      <div class="testimonial">
+        <p>"Innovative projects that speak volumes of technical prowess and creativity."</p>
+        <p>- Client B</p>
+      </div>
+    </section>
+  </main>
+
+  <form class="contact-form" id="contactForm">
+    <div class="input-group">
+      <input type="text" class="form-input" placeholder=" " required />
+      <label class="form-label">Name</label>
+    </div>
+    <div class="input-group">
+      <input type="email" class="form-input" placeholder=" " required />
+      <label class="form-label">Email</label>
+    </div>
+    <div class="input-group">
+      <textarea class="form-input" placeholder=" " rows="4" required></textarea>
+      <label class="form-label">Message</label>
+    </div>
+    <button type="submit" class="theme-toggle">
+      <span class="material-icons">send</span>
+    </button>
+    <div class="success-message">Message sent successfully!</div>
+  </form>
+
+  <footer class="container">
+    <p>Let's connect → ramsify0@gmail.com</p>
+    <!-- Social Media Section with inline SVG icons (all uniformly 30x30) -->
+    <div class="social-media">
+      <!-- LinkedIn Icon -->
+      <a href="https://www.linkedin.com/in/yourprofile" target="_blank" aria-label="LinkedIn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" x="0px" y="0px" viewBox="0 0 50 50">
+          <path d="M41,4H9C6.24,4,4,6.24,4,9v32c0,2.76,2.24,5,5,5h32c2.76,0,5-2.24,5-5V9C46,6.24,43.76,4,41,4z M17,20v19h-6V20H17z 
+          M11,14.47c0-1.4,1.2-2.47,3-2.47s2.93,1.07,3,2.47c0,1.4-1.12,2.53-3,2.53C12.2,17,11,15.87,11,14.47z M39,39h-6
+          c0,0,0-9.26,0-10c0-2-1-4-3.5-4.04h-0.08C27,24.96,26,27.02,26,29c0,0.91,0,10,0,10h-6V20h6v2.56
+          c0,0,1.93-2.56,5.81-2.56c3.97,0,7.19,2.73,7.19,8.26V39z"></path>
+        </svg>
+      </a>
+      <!-- GitHub Icon (unchanged) -->
+      <a href="https://github.com/yourprofile" target="_blank" aria-label="GitHub">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" x="0px" y="0px" viewBox="0 0 30 30">
+          <path d="M15,3C8.373,3,3,8.373,3,15c0,5.623,3.872,10.328,9.092,11.63C12.036,26.468,12,26.28,12,26.047v-2.051
+          c-0.487,0-1.303,0-1.508,0c-0.821,0-1.551-0.353-1.905-1.009c-0.393-0.729-0.461-1.844-1.435-2.526
+          c-0.289-0.227-0.069-0.486,0.264-0.451c0.615,0.174,1.125,0.596,1.605,1.222c0.478,0.627,0.703,0.769,1.596,0.769
+          c0.433,0,1.081-0.025,1.691-0.121c0.328-0.833,0.895-1.6,1.588-1.962c-3.996-0.411-5.903-2.399-5.903-5.098
+          c0-1.162,0.495-2.286,1.336-3.233C9.053,10.647,8.706,8.73,9.435,8c1.798,0,2.885,1.166,3.146,1.481
+          C13.477,9.174,14.461,9,15.495,9c1.036,0,2.024,0.174,2.922,0.483C18.675,9.17,19.763,8,21.565,8
+          c0.732,0.731,0.381,2.656,0.102,3.594c0.836,0.945,1.328,2.066,1.328,3.226c0,2.697-1.904,4.684-5.894,5.097
+          C18.199,20.49,19,22.1,19,23.313v2.734c0,0.104-0.023,0.179-0.035,0.268C23.641,24.676,27,20.236,27,15
+          C27,8.373,21.627,3,15,3z"></path>
+        </svg>
+      </a>
+      <!-- Behance Icon -->
+      <a href="https://www.behance.net/yourprofile" target="_blank" aria-label="Behance">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" x="0px" y="0px" viewBox="0 0 32 32">
+          <path d="M 1 6.75 L 1 25.25 L 9.9375 25.25 C 10.765625 25.25 16.46875 25.082031 16.46875 19.875 C 16.46875 16.621094 14.230469 15.515625 13.09375 15.1875 C 13.929688 14.792969 15.59375 13.855469 15.59375 11.34375 C 15.59375 9.945313 15.394531 6.75 9.6875 6.75 Z M 21.375 8.46875 L 21.375 10.15625 L 28.28125 10.15625 L 28.28125 8.46875 Z M 5.0625 9.90625 L 8.875 9.90625 C 9.234375 9.90625 11.65625 9.714844 11.65625 12.03125 C 11.65625 14.011719 9.90625 14.21875 9.1875 14.21875 L 5.0625 14.21875 Z M 25 11.6875 C 19.777344 11.6875 18.6875 16.222656 18.6875 18.1875 C 18.6875 24.019531 23.46875 24.6875 25 24.6875 C 29.128906 24.6875 30.300781 22.015625 30.78125 20.53125 L 27.78125 20.53125 C 27.664063 20.914063 26.789063 22.15625 25.125 22.15625 C 22.335938 22.15625 22.09375 19.976563 22.09375 19 L 30.96875 19 C 31.148438 15.625 29.671875 11.6875 25 11.6875 Z M 24.90625 14.21875 C 25.738281 14.21875 26.410156 14.460938 26.8125 14.90625 C 27.214844 15.355469 27.511719 16.011719 27.59375 16.875 L 22.09375 16.875 C 22.109375 16.636719 22.164063 16.363281 22.25 16.0625 C 22.335938 15.753906 22.46875 15.460938 22.6875 15.1875 C 22.90625 14.917969 23.210938 14.683594 23.5625 14.5 C 23.921875 14.3125 24.367188 14.21875 24.90625 14.21875 Z M 5.0625 17 L 9.46875 17 C 10.34375 17 12.40625 17.136719 12.40625 19.65625 C 12.40625 22.097656 9.808594 22.09375 9.40625 22.09375 L 5.0625 22.09375 Z"></path>
+        </svg>
+      </a>
+      <!-- WhatsApp Icon -->
+      <a href="https://wa.me/yourphonenumber" target="_blank" aria-label="WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" x="0px" y="0px" viewBox="0 0 24 24">
+          <path d="M 12.011719 2 C 6.5057187 2 2.0234844 6.478375 2.0214844 11.984375 C 2.0204844 13.744375 2.4814687 15.462563 3.3554688 16.976562 L 2 22 L 7.2324219 20.763672 C 8.6914219 21.559672 10.333859 21.977516 12.005859 21.978516 L 12.009766 21.978516 C 17.514766 21.978516 21.995047 17.499141 21.998047 11.994141 C 22.000047 9.3251406 20.962172 6.8157344 19.076172 4.9277344 C 17.190172 3.0407344 14.683719 2.001 12.011719 2 z M 12.009766 4 C 14.145766 4.001 16.153109 4.8337969 17.662109 6.3417969 C 19.171109 7.8517969 20.000047 9.8581875 19.998047 11.992188 C 19.996047 16.396187 16.413812 19.978516 12.007812 19.978516 C 10.674812 19.977516 9.3544062 19.642812 8.1914062 19.007812 L 7.5175781 18.640625 L 6.7734375 18.816406 L 4.8046875 19.28125 L 5.2851562 17.496094 L 5.5019531 16.695312 L 5.0878906 15.976562 C 4.3898906 14.768562 4.0204844 13.387375 4.0214844 11.984375 C 4.0234844 7.582375 7.6067656 4 12.009766 4 z M 8.4765625 7.375 C 8.3095625 7.375 8.0395469 7.4375 7.8105469 7.6875 C 7.5815469 7.9365 6.9355469 8.5395781 6.9355469 9.7675781 C 6.9355469 10.995578 7.8300781 12.182609 7.9550781 12.349609 C 8.0790781 12.515609 9.68175 15.115234 12.21875 16.115234 C 14.32675 16.946234 14.754891 16.782234 15.212891 16.740234 C 15.670891 16.699234 16.690438 16.137687 16.898438 15.554688 C 17.106437 14.971687 17.106922 14.470187 17.044922 14.367188 C 16.982922 14.263188 16.816406 14.201172 16.566406 14.076172 C 16.317406 13.951172 15.090328 13.348625 14.861328 13.265625 C 14.632328 13.182625 14.464828 13.140625 14.298828 13.390625 C 14.132828 13.640625 13.655766 14.201187 13.509766 14.367188 C 13.363766 14.534188 13.21875 14.556641 12.96875 14.431641 C 12.71875 14.305641 11.914938 14.041406 10.960938 13.191406 C 10.218937 12.530406 9.7182656 11.714844 9.5722656 11.464844 C 9.4272656 11.215844 9.5585938 11.079078 9.6835938 10.955078 C 9.7955938 10.843078 9.9316406 10.663578 10.056641 10.517578 C 10.180641 10.371578 10.223641 10.267562 10.306641 10.101562 C 10.389641 9.9355625 10.347156 9.7890625 10.285156 9.6640625 C 10.223156 9.5390625 9.737625 8.3065 9.515625 7.8125 C 9.328625 7.3975 9.131125 7.3878594 8.953125 7.3808594 C 8.808125 7.3748594 8.6425625 7.375 8.4765625 7.375 z"></path>
+        </svg>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    // Define available themes
+    const themes = ['light', 'dark', 'custom-dark', 'custom-light'];
+
+    // Theme Management: cycle through all four themes
+    function toggleTheme() {
+      const currentTheme = document.body.dataset.theme || 'light';
+      let currentIndex = themes.indexOf(currentTheme);
+      let newIndex = (currentIndex + 1) % themes.length;
+      let newTheme = themes[newIndex];
+      document.body.dataset.theme = newTheme;
+      localStorage.setItem('theme', newTheme);
+      // Choose an icon based on theme: dark themes use "dark_mode"
+      const icon = (newTheme === 'dark' || newTheme === 'custom-dark') ? 'dark_mode' : 'light_mode';
+      document.getElementById('themeToggle').innerHTML = `<span class="material-icons">${icon}</span>`;
+      createAiMessage(`Switched to ${newTheme} mode`, `<span class="material-icons">${icon}</span>`);
+    }
+    // Set initial theme from localStorage or default to 'light'
+    document.body.dataset.theme = localStorage.getItem('theme') || 'light';
+
+    // Live Date and Time Update
+    function updateDateTime() {
+      const now = new Date();
+      const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+      const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      document.getElementById('date').textContent = now.toLocaleDateString(undefined, dateOptions);
+      document.getElementById('time').textContent = now.toLocaleTimeString(undefined, timeOptions);
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // Advanced Filtering: Filter projects based on buttons and search input
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterProjects();
+      });
+    });
+    document.getElementById('projectSearch').addEventListener('input', filterProjects);
+    function filterProjects() {
+      const searchTerm = document.getElementById('projectSearch').value.toLowerCase();
+      const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+      projectCards.forEach(card => {
+        const title = card.getAttribute('data-title').toLowerCase();
+        const category = card.getAttribute('data-category');
+        if ((activeFilter === 'all' || category === activeFilter) && title.includes(searchTerm)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Dynamic Project Showcase: Open project modal with details on card click
+    projectCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const title = card.querySelector('h4').textContent;
+        const description = card.querySelector('h5').textContent;
+        const content = `<h4>${title}</h4><p>${description}</p>`;
+        document.getElementById('projectDetailsContent').innerHTML = content;
+        openModal('projectModal');
+      });
+    });
+
+    // Modal Functions (for both search and project modals)
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+    }
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Search Modal functionality
+    document.getElementById('search-btn').addEventListener('click', () => {
+      const query = document.getElementById('search-input').value.trim().toLowerCase();
+      const resultElem = document.getElementById('search-result');
+      const files = ["portfolio.pdf", "design_sketch.ai", "project_overview.docx", "resume.pdf"];
+      const found = files.find(file => file.toLowerCase().includes(query));
+      if(found) {
+        resultElem.textContent = `File found: ${found}`;
+      } else {
+        resultElem.textContent = "No matching file found.";
+      }
+    });
+    document.getElementById('search-input').addEventListener('keypress', (e) => {
+      if(e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('search-btn').click();
+      }
+    });
+    document.getElementById('search-modal').addEventListener('click', (e) => {
+      if(e.target === document.getElementById('search-modal')) {
+        closeModal('search-modal');
+      }
+    });
+
+    // Nana Chat System
+    let lastAiResponseTimestamp = 0;
+    let lastInteraction = Date.now();
+    const interactionMessages = [
+      { trigger: 'scroll', message: "Exploring my creations? <span class='material-icons'>search</span>" },
+      { trigger: 'contactSubmit', message: "Message dispatched! <span class='material-icons'>send</span>" },
+      { trigger: 'themeChange', message: "I see you prefer {theme} vision <span class='material-icons'>{icon}</span>" },
+      { trigger: 'gameStart', message: "Let's connect! (Hire me)" },
+      { trigger: 'inactivity', message: "Are you still there? <span class='material-icons'>visibility</span>" },
+      { trigger: 'hoverTheme', message: "Curious about switching themes?" },
+      { trigger: 'contactFocus', message: "Ready to connect?" }
+    ];
+    function createAiMessage(text, icon = '') {
+      if(Date.now() - lastAiResponseTimestamp < 2000) return;
+      lastAiResponseTimestamp = Date.now();
+      const message = document.createElement('div');
+      message.className = 'nana-message';
+      message.innerHTML = `<p>${text} ${icon}</p>`;
+      document.body.appendChild(message);
+      setTimeout(() => message.classList.add('show'), 100);
+      setTimeout(() => {
+        message.classList.remove('show');
+        setTimeout(() => message.remove(), 500);
+      }, 3000);
+      const nanaIcon = document.getElementById('nana-icon');
+      nanaIcon.classList.add('neural-heartbeat');
+      setTimeout(() => nanaIcon.classList.remove('neural-heartbeat'), 1000);
+    }
+    function introduceNana() {
+      createAiMessage("Hi, I'm Nana! How can I assist you today?");
+    }
+    let nanaClickTimer;
+    const nanaIconElem = document.getElementById('nana-icon');
+    nanaIconElem.addEventListener('click', () => {
+      if(nanaClickTimer) clearTimeout(nanaClickTimer);
+      nanaClickTimer = setTimeout(() => {
+        openModal('search-modal');
+      }, 300);
+    });
+    nanaIconElem.addEventListener('dblclick', () => {
+      if(nanaClickTimer) clearTimeout(nanaClickTimer);
+      createAiMessage("ouch");
+    });
+
+    // Hire Me widget action
+    const gameWidget = document.getElementById('game-widget');
+    gameWidget.addEventListener('click', () => {
+      document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth' });
+      createAiMessage("Let's get in touch!", '<span class="material-icons">phone</span>');
+      lastInteraction = Date.now();
+    });
+
+    // Particle System for interactivity
+    document.addEventListener('mousemove', (e) => {
+      if(Math.random() > 0.95) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+          position: fixed;
+          width: 8px;
+          height: 8px;
+          background: ${Math.random() > 0.5 ? 'var(--accent)' : 'var(--primary)'};
+          border-radius: 50%;
+          left: ${e.pageX}px;
+          top: ${e.pageY}px;
+          transition: transform 0.3s, opacity 0.3s;
+        `;
+        document.body.appendChild(particle);
+        setTimeout(() => {
+          particle.style.transform = 'scale(2)';
+          particle.style.opacity = '0';
+          setTimeout(() => particle.remove(), 300);
+        }, 50);
+      }
+    });
+
+    // Additional AI Interactions on hover/focus events
+    document.getElementById('themeToggle').addEventListener('mouseenter', () => {
+      createAiMessage(interactionMessages.find(msg => msg.trigger === 'hoverTheme').message);
+    });
+    document.querySelectorAll('.form-input').forEach(input => {
+      input.addEventListener('focus', () => {
+        createAiMessage(interactionMessages.find(msg => msg.trigger === 'contactFocus').message);
+      });
+    });
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      createAiMessage("Message dispatched! <span class='material-icons'>send</span>");
+      document.querySelector('.success-message').classList.add('visible');
+      setTimeout(() => document.querySelector('.success-message').classList.remove('visible'), 3000);
+      lastInteraction = Date.now();
+    });
+
+    // Loader, Cursor, Inactivity Monitor
+    document.addEventListener('DOMContentLoaded', () => {
+      let count = 1;
+      const loadingInterval = setInterval(() => {
+        document.getElementById('loading-count').textContent = count;
+        if(count++ >= 25) {
+          clearInterval(loadingInterval);
+          document.getElementById('loading-screen').style.opacity = '0';
+          setTimeout(() => {
+            document.getElementById('loading-screen').remove();
+            introduceNana();
+          }, 500);
+        }
+      }, 100);
+      document.addEventListener('mousemove', e => {
+        document.querySelector('.cursor').style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
+        document.querySelector('.cursor-follower').style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+      });
+      setInterval(() => {
+        if(Date.now() - lastInteraction > 30000) {
+          createAiMessage("Are you still there? <span class='material-icons'>visibility</span>");
+          lastInteraction = Date.now();
+        }
+      }, 30000);
+    });
+
+    // Service Worker Registration for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').then(function(reg) {
+        console.log('Service Worker Registered', reg);
+      }).catch(function(err) {
+        console.log('Service Worker Registration failed: ', err);
+      });
+    }
+  </script>
+</body>
+</html>
